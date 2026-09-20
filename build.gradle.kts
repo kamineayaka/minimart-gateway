@@ -2,7 +2,7 @@ import org.gradle.api.tasks.bundling.Jar
 
 plugins {
 	java
-	id("org.springframework.boot") version "4.1.1"
+	id("org.springframework.boot") version "4.0.8"
 	id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -17,13 +17,12 @@ java {
 
 dependencyManagement {
 	imports {
-		mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
-		mavenBom("com.alibaba.cloud:spring-cloud-alibaba-dependencies:2025.1.0.0")
-		mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.1.3")
+		mavenBom("com.minimart:minimart-bom:0.1.0")
 	}
 }
 
 dependencies {
+	implementation("com.minimart:minimart-api-common")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -33,6 +32,7 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+	testImplementation("org.springframework.boot:spring-boot-resttestclient")
 	testImplementation("org.springframework.boot:spring-boot-starter-actuator-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
