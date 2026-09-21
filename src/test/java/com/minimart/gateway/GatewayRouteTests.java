@@ -26,13 +26,14 @@ class GatewayRouteTests {
 	GatewayMvcProperties gatewayMvcProperties;
 
 	@Test
-	void yamlDeclaresLbRoutesForAllFourServices() {
+	void yamlDeclaresDirectHttpRoutesForAllFourServices() {
 		assertThat(gatewayMvcProperties.getRoutes()).extracting(route -> route.getUri().toString())
-				.containsExactlyInAnyOrder(
-						"lb://member-service",
-						"lb://product-service",
-						"lb://order-service",
-						"lb://payment-service");
+				.allSatisfy(uri -> assertThat(uri).startsWith("http://"))
+				.extracting(uri -> uri.replaceFirst("^http://", ""))
+				.anyMatch(hostPort -> hostPort.startsWith("member-service:"))
+				.anyMatch(hostPort -> hostPort.startsWith("product-service:"))
+				.anyMatch(hostPort -> hostPort.startsWith("order-service:"))
+				.anyMatch(hostPort -> hostPort.startsWith("payment-service:"));
 	}
 
 	@Test
@@ -46,7 +47,7 @@ class GatewayRouteTests {
 	}
 
 	@Test
-	void publicPrefixesRouteToLoadBalancer() {
+	void publicPrefixesRouteToBackendServices() {
 		for (String prefix : new String[] {
 				PublicRoutePrefixes.MEMBER,
 				PublicRoutePrefixes.PRODUCT,
